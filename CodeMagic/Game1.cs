@@ -1,4 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CodeMagic.Source;
+using CodeMagic.Source.Controllers;
+using CodeMagic.Source.Engine;
+using CodeMagic.Source.Models;
+using CodeMagic.Source.Views;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,6 +13,10 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+
+    private Player _player;
+    private PlayerView _playerView;
+    private MovementController _movementController;
 
     public Game1()
     {
@@ -25,7 +34,15 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        Globals.content = this.Content;
+        Globals.spriteBatch = new SpriteBatch(GraphicsDevice);
+        var playerTexture = Content.Load<Texture2D>("Sprites\\player");
+
+        _player = new Player(new Vector2(0, 0), playerTexture, 5);
+        _playerView = new PlayerView(_player);
+        _movementController = new MovementController(_player);
+
+
 
         // TODO: use this.Content to load your game content here
     }
@@ -37,6 +54,9 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
+        
+        _movementController.Update();
+        
 
         base.Update(gameTime);
     }
@@ -46,6 +66,12 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
+        
+        Globals.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        
+        _playerView.Draw();
+        
+        Globals.spriteBatch.End();
 
         base.Draw(gameTime);
     }
