@@ -7,12 +7,12 @@ namespace CodeMagic.Source.Models;
 
 public class Map
 {
-    private readonly int sizeCoeff = 10;
     private readonly Texture2D _tileset;
-    private List<Texture2D> _tiles = new() { null };
 
+    public List<Texture2D> _tiles = new() { null };
     public readonly int[,] map;
     public readonly int tileSize;
+    public readonly int sizeCoeff = 3;
 
     public Map(Texture2D tileset, int tileSize, int[,] map)
     {
@@ -37,17 +37,33 @@ public class Map
         }
     }
 
-    public void Draw()
+    public bool WillCollide(Vector2 futurePosition, int objectHeight, int objectWidth)
     {
-        for (var x = 0; x < map.GetLength(1); x++)
         {
-            for (var y = 0; y < map.GetLength(0); y++)
+            var startX = (int)(futurePosition.X / tileSize / sizeCoeff);
+            var startY = (int)(futurePosition.Y / tileSize / sizeCoeff);
+            var endX = (int)((futurePosition.X + objectWidth) / tileSize / sizeCoeff);
+            var endY = (int)((futurePosition.Y + objectHeight) / tileSize / sizeCoeff);
+
+            // Проверяем, что позиция находится в пределах карты
+            if (startX < 0 || endX >= map.GetLength(0) || startY < 0 || endY >= map.GetLength(1))
             {
-                if (map[y, x] == 0) continue;
-                var destinationRectangle = new Rectangle(x * tileSize * sizeCoeff, y * tileSize * sizeCoeff,
-                    tileSize * sizeCoeff, tileSize * sizeCoeff);
-                Globals.spriteBatch.Draw(_tiles[map[y, x]], destinationRectangle, Color.White);
+                return true;
             }
+
+            // Проверяем, не пересекается ли объект с твердыми тайлами
+            for (var x = startX; x <= endX; x++)
+            {
+                for (var y = startY; y <= endY; y++)
+                {
+                    if (map[x, y] != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CodeMagic.Source;
+﻿using System;
+using CodeMagic.Source;
 using CodeMagic.Source.Controllers;
 using CodeMagic.Source.Engine;
 using CodeMagic.Source.Models;
@@ -13,6 +14,34 @@ namespace CodeMagic;
 
 public class Game1 : Game
 {
+    public int[,] Map1 =
+    {
+        { 6, 7, 7, 7, 7, 7, 7, 7, 7, 8 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 14, 15, 15, 15, 15, 15, 15, 15, 15, 16 },
+        { 22, 23, 23, 23, 23, 23, 23, 23, 23, 24 }
+    };
+
+    public int[,] Map2 =
+    {
+        { 6, 7, 7, 7, 7, 7, 7, 7, 7, 8 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 14, 0, 0, 0, 0, 0, 0, 0, 0, 16 },
+        { 22, 23, 23, 23, 23, 23, 23, 23, 23, 24 }
+    };
+
     public const int WindowWidth = 1920;
     public const int WindowHeight = 1000;
 
@@ -23,11 +52,9 @@ public class Game1 : Game
     private PlayerView _playerView;
     private MovementController _movementController;
 
-    // TiledMap _tiledMap;
-    // TiledMapRenderer _tiledMapRenderer;
-
     private Texture2D _tileset;
     private Map _map;
+    private MapView _mapView;
 
     public Game1()
     {
@@ -51,24 +78,16 @@ public class Game1 : Game
         Globals.content = this.Content;
         Globals.spriteBatch = new SpriteBatch(GraphicsDevice);
         Globals.graphicsDevice = GraphicsDevice;
+        
+        _tileset = Content.Load<Texture2D>("Maps\\[A]Grass_pipo");
+        _map = new Map(_tileset, 32, Map2);
+        _mapView = new MapView(_map);
+        Console.WriteLine(_map);
+        Console.WriteLine(_map is not null);
         var playerTexture = Content.Load<Texture2D>("Sprites\\player");
-
-        _player = new Player(new Vector2(0, 0), playerTexture, 5);
+        _player = new Player(new Vector2(100, 100), playerTexture, _map, 5);
         _playerView = new PlayerView(_player);
         _movementController = new MovementController(_player);
-
-        // _tiledMap = Content.Load<TiledMap>("Maps\\field");
-        // _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
-        _tileset = Content.Load<Texture2D>("Maps\\[A]Grass_pipo");
-        var map = new int[,]
-        {
-            { 1, 2, 1 },
-            { 1, 2, 1 },
-            { 1, 2, 1 },
-            { 1, 2, 1 }
-        };
-        _map = new Map(_tileset, 32, map);
-
 
         // TODO: use this.Content to load your game content here
     }
@@ -96,7 +115,7 @@ public class Game1 : Game
 
         Globals.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-        _map.Draw();
+        _mapView.Draw();
 
         _playerView.Draw();
         // _tiledMapRenderer.Draw();

@@ -7,17 +7,21 @@ namespace CodeMagic.Source.Models;
 public class Player
 {
     public event Action OnPositionChanged;
+
+    private Map _map;
     
     private Spell[] _spells;
     private Vector2 position;
     private float speedModifier;
     public Texture2D Texture { get; set; }
 
-    public Player(Vector2 initialPosition, Texture2D texture, float speedModifier = 1)
+    public Player(Vector2 initialPosition, Texture2D texture, Map map, float speedModifier = 1)
     {
-        Position = initialPosition;
+        _map = map;
         Texture = texture;
+        Position = initialPosition;
         this.speedModifier = speedModifier;
+        Console.WriteLine(_map);
     }
 
     public Vector2 Position
@@ -25,8 +29,9 @@ public class Player
         get => position;
         set
         {
-            position = value;
-            OnPositionChanged?.Invoke();
+            if (!_map.WillCollide(value, Texture.Height, Texture.Width))
+                position = value;
+            // OnPositionChanged?.Invoke();
         }
     }
 
