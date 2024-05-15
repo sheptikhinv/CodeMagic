@@ -7,11 +7,12 @@ namespace CodeMagic.Source.Models;
 
 public class Map
 {
-    public readonly int tileSize;
+    private readonly int sizeCoeff = 10;
     private readonly Texture2D _tileset;
     private List<Texture2D> _tiles = new() { null };
 
     public readonly int[,] map;
+    public readonly int tileSize;
 
     public Map(Texture2D tileset, int tileSize, int[,] map)
     {
@@ -43,7 +44,9 @@ public class Map
             for (var y = 0; y < map.GetLength(0); y++)
             {
                 if (map[y, x] == 0) continue;
-                Globals.spriteBatch.Draw(_tiles[map[y, x]], new Vector2(x * tileSize, y * tileSize), Color.White);
+                var destinationRectangle = new Rectangle(x * tileSize * sizeCoeff, y * tileSize * sizeCoeff,
+                    tileSize * sizeCoeff, tileSize * sizeCoeff);
+                Globals.spriteBatch.Draw(_tiles[map[y, x]], destinationRectangle, Color.White);
             }
         }
     }
