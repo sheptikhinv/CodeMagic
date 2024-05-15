@@ -44,6 +44,14 @@ public class Player
 
     public void Move(Vector2 delta)
     {
-        Position += delta * speedModifier;
+        if (!_map.WillCollide(new Vector2(Position.X + delta.X, Position.Y), Texture.Height, Texture.Width))
+        {
+            Position = new Vector2(Position.X + delta.X * speedModifier, Position.Y);
+        }
+        
+        if (!_map.WillCollide(new Vector2(Position.X, Position.Y + delta.Y), Texture.Height, Texture.Width))
+        {
+            Position = new Vector2(Position.X, Position.Y + delta.Y);
+        }
     }
 }

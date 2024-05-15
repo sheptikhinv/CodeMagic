@@ -101,8 +101,6 @@ public class Game1 : Game
         // TODO: Add your update logic here
 
         _movementController.Update();
-        // _tiledMapRenderer.Update(gameTime);
-
 
         base.Update(gameTime);
     }
