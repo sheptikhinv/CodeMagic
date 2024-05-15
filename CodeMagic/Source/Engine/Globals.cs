@@ -7,4 +7,5 @@ public class Globals
 {
     public static SpriteBatch spriteBatch;
     public static ContentManager content;
+    public static GraphicsDevice graphicsDevice;
 }
